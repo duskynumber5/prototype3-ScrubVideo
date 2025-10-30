@@ -10,7 +10,7 @@ const config = {
     physics: {
         default: "arcade",
         arcade: {
-            gravity: { y: 300 },
+            //gravity: {y: 3500},
             debug: true
         }
     },
@@ -18,3 +18,5 @@ const config = {
 }   
 
 const game = new Phaser.Game(config)
+
+let keyA, keyD
