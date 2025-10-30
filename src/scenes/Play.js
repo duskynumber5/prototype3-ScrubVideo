@@ -11,16 +11,13 @@ class Play extends Phaser.Scene {
         // add background image
         this.bg = this.add.image(0, 0, 'bg').setOrigin(0)
         this.bg.setScale(3)
-
-        // set up camera
-        // this.cameras.main.setBounds(0, 0, this.bg.width, this.bg.height)
-        // this.cameras.main.startFollow(this.player, false, 0.5, 0.5)
-        // this.physics.world.setBounds(0, 0, this.bg.width, this.bg.height)
         
         this.player = this.physics.add.sprite(20, 850, 'player').setOrigin(0)
         this.player.setScale(0.4)
+        this.physics.world.enable(this.player)
+        this.player.setGravityY(10000)
         this.player.body.setCollideWorldBounds(true)
-        this.player.body.setGravityY(3500)
+
 
         const makePlatform = (x, y, w=100, h=20, baseVX=100, baseVY=0) => {
         const r = this.add.rectangle(x, y, w, h, 0xffffff).setOrigin(0,0);
@@ -63,8 +60,10 @@ class Play extends Phaser.Scene {
             this.direction.x = 1
         }
 
+        this.player.setVelocityX(this.VEL * this.direction.x)
+
         if(this.cursors.space.isDown) {
-            this.direction.y = -100
+            this.player.body.setVelocityY(-900)
         }
 
         if (this.cursors.left.isDown) {
@@ -74,6 +73,5 @@ class Play extends Phaser.Scene {
         }
 
         this.direction.normalize()
-        this.player.setVelocity(this.VEL * this.direction.x, this.VEL * this.direction.y)
     }
 }
