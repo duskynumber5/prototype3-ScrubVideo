@@ -1,8 +1,8 @@
 const config = {
     parent: 'phaser-game',  // for info text
     type: Phaser.WEBGL,     // for tinting
-    width: 1500,
-    height: 850,
+    width: 1300,
+    height: 700,
     autoCenter: true,
     pixelArt: true,
     backgroundColor: 'rgba(68, 68, 68, 1)',
@@ -18,4 +18,4 @@ const config = {
 
 const game = new Phaser.Game(config)
 
-let keyA, keyD
+let keyA, keyD, keySpace
