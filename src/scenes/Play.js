@@ -4,7 +4,7 @@ class Play extends Phaser.Scene {
     }
 
     init() {
-        this.VEL = 400 
+        this.VEL = 400
     }
 
     create() {
@@ -12,12 +12,8 @@ class Play extends Phaser.Scene {
         this.bg = this.add.image(0, 0, 'bg').setOrigin(0)
         this.bg.setScale(3)
         
-        this.player = this.physics.add.sprite(20, 850, 'player').setOrigin(0)
+        this.player = new Player(this, 20, 850, 'player').setOrigin(0)
         this.player.setScale(0.4)
-        this.physics.world.enable(this.player)
-        this.player.setGravityY(10000)
-        this.player.body.setCollideWorldBounds(true)
-
 
         const makePlatform = (x, y, w=100, h=20, baseVX=100, baseVY=0) => {
         const r = this.add.rectangle(x, y, w, h, 0xffffff).setOrigin(0,0);
@@ -32,16 +28,16 @@ class Play extends Phaser.Scene {
         };
 
         this.platforms = [
-            makePlatform(100,800,100,20,100,0),
+            makePlatform(100,600,100,20,100,0),
             makePlatform(200,600,100,20,-150,0),
             makePlatform(300,200,100,20,0,120),
             makePlatform(400,500,100,20,200,0),
-            makePlatform(500,900,100,20,-100,0),
+            makePlatform(500,400,100,20,-100,0),
             makePlatform(600,0,  100,20,0,150),
             makePlatform(700,300,100,20,150,0),
             makePlatform(800,700,100,20,-200,0),
             makePlatform(900,100,100,20,0,200),
-            makePlatform(1000,400,100,20,100,0),
+            makePlatform(1000,150,100,20,100,0),
         ];
 
         this.platforms.forEach(p => this.physics.add.collider(this.player, p));
@@ -50,6 +46,7 @@ class Play extends Phaser.Scene {
 
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+        keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     }
 
     update() {
@@ -60,17 +57,17 @@ class Play extends Phaser.Scene {
             this.direction.x = 1
         }
 
-        this.player.setVelocityX(this.VEL * this.direction.x)
-
         if(this.cursors.space.isDown) {
-            this.player.body.setVelocityY(-900)
+            this.player.update()
         }
 
         if (this.cursors.left.isDown) {
-
+            
         } else if (this.cursors.right.isDown) {
 
         }
+
+        this.player.body.velocity.x = this.VEL * this.direction.x
 
         this.direction.normalize()
     }
