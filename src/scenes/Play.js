@@ -1,6 +1,7 @@
 class Play extends Phaser.Scene {
     constructor() {
         super("playScene")
+        this.T = 0;
     }
 
     init() {
@@ -15,29 +16,22 @@ class Play extends Phaser.Scene {
         this.player = new Player(this, 20, 850, 'player').setOrigin(0)
         this.player.setScale(0.4)
 
-        const makePlatform = (x, y, w=100, h=20, baseVX=100, baseVY=0) => {
+        const makePlatform = (x, y, w=100, h=20, m, b, shift, exp) => {
         const r = this.add.rectangle(x, y, w, h, 0xffffff).setOrigin(0,0);
         this.physics.add.existing(r)
         r.body.setImmovable(true);           
         r.body.setCollideWorldBounds(true); 
-        r.body.setBounce(1, 1);
-        r.baseVX = baseVX 
-        r.baseVY = baseVY
-        r.body.setVelocity(baseVX, baseVY)
+        r.m = m;
+        r.b = b;
+        r.shift = shift;
+        r.exp = exp;
         return r;
         };
 
         this.platforms = [
-            makePlatform(100,600,100,20,100,0),
-            makePlatform(200,600,100,20,-150,0),
-            makePlatform(300,200,100,20,0,120),
-            makePlatform(400,500,100,20,200,0),
-            makePlatform(500,400,100,20,-100,0),
-            makePlatform(600,0,  100,20,0,150),
-            makePlatform(700,300,100,20,150,0),
-            makePlatform(800,700,100,20,-200,0),
-            makePlatform(900,100,100,20,0,200),
-            makePlatform(1000,150,100,20,100,0),
+            makePlatform(100,600,100,20,1,1,0,1),
+            makePlatform(100,600,100,20,2,10,0,1),
+            makePlatform(100,600,100,20,-0.05,600,400,2),
         ];
 
         this.platforms.forEach(p => this.physics.add.collider(this.player, p));
@@ -62,13 +56,35 @@ class Play extends Phaser.Scene {
         }
 
         if (this.cursors.left.isDown) {
-            
-        } else if (this.cursors.right.isDown) {
+            this.T--
+            if(this.T <= 0){
+                this.T = 0;
+            }
 
+        } else if (this.cursors.right.isDown) {
+            this.T++;
+            if(this.T >= 1200){
+                this.T = 1200;
+            }
         }
 
         this.player.body.velocity.x = this.VEL * this.direction.x
 
         this.direction.normalize()
+        this.updatePlatforms();
+    }
+
+    updatePlatforms(){
+        for(let platform of this.platforms){
+            platform.setX(this.T)
+            let newY = ((platform.m * ((this.T - platform.shift)**platform.exp)) + platform.b)
+            if(newY >= 700){
+                newY = 680;
+            }
+            else if (newY <= 0){
+                newY = 0;
+            }
+            platform.setY(newY)
+        }
     }
 }
