@@ -25,16 +25,24 @@ class Play extends Phaser.Scene {
         r.b = b;
         r.shift = shift;
         r.exp = exp;
+        r.frozen = false;
         return r;
         };
 
         this.platforms = [
             makePlatform(100,600,100,20,1,1,0,1),
             makePlatform(100,600,100,20,2,10,0,1),
-            makePlatform(100,600,100,20,-0.05,600,400,2),
+            makePlatform(100,600,100,20,-0.005,600,700,2),
+            makePlatform(100,600,100,20,-0.0001,400,700,3),
         ];
 
-        this.platforms.forEach(p => this.physics.add.collider(this.player, p));
+        this.physics.add.collider(this.player, this.platforms, (player, platform) => {
+            if (player.body.touching.down && platform.body.touching.up) {
+                console.log("Player landed on top of a platform!")
+                platform.frozen = true;
+                platform.setFillStyle(0xff0000);
+            }
+        });
 
         this.cursors = this.input.keyboard.createCursorKeys()
 
@@ -73,18 +81,25 @@ class Play extends Phaser.Scene {
         this.direction.normalize()
         this.updatePlatforms();
     }
-
     updatePlatforms(){
         for(let platform of this.platforms){
-            platform.setX(this.T)
-            let newY = ((platform.m * ((this.T - platform.shift)**platform.exp)) + platform.b)
-            if(newY >= 700){
-                newY = 680;
+            if(!this.player.body.blocked.down){
+                platform.frozen = false;
+                platform.setFillStyle(0xffffff)
             }
-            else if (newY <= 0){
-                newY = 0;
+            if(!platform.frozen){
+                platform.setX(this.T)
+                let newY = ((platform.m * ((this.T - platform.shift)**platform.exp)) + platform.b)
+                if(newY >= 700){
+                    newY = 680;
+                }
+                else if (newY <= 0){
+                    newY = 0;
+                }
+                platform.setY(newY)
             }
-            platform.setY(newY)
+
         }
     }
+
 }
