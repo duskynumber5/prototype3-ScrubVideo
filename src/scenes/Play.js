@@ -16,7 +16,7 @@ class Play extends Phaser.Scene {
         this.player = new Player(this, 20, 850, 'player').setOrigin(0)
         this.player.setScale(0.4)
 
-        const makePlatform = (x, y, w=100, h=20, m, b, shift, exp) => {
+        const makePlatform = (x, y, w=100, h=20, m, b, shift, exp,offset) => {
         const r = this.add.rectangle(x, y, w, h, 0xffffff).setOrigin(0,0);
         this.physics.add.existing(r)
         r.body.setImmovable(true);           
@@ -26,14 +26,17 @@ class Play extends Phaser.Scene {
         r.shift = shift;
         r.exp = exp;
         r.frozen = false;
+        r.offset = offset;
         return r;
         };
 
         this.platforms = [
-            makePlatform(100,600,100,20,1,1,0,1),
-            makePlatform(100,600,100,20,2,10,0,1),
-            makePlatform(100,600,100,20,-0.005,600,700,2),
-            makePlatform(100,600,100,20,-0.0001,400,700,3),
+            makePlatform(100,600,100,20,1,1,0,1,0),
+            makePlatform(100,600,100,20,2.2,8,0,1,400),
+            makePlatform(100,600,100,20,1.3,3,0,1,800),
+            makePlatform(100,600,100,20,2,10,0,1,200),
+            makePlatform(100,600,100,20,-0.005,600,700,2,100),
+            makePlatform(100,600,100,20,-0.0001,400,700,3,100),
         ];
 
         this.physics.add.collider(this.player, this.platforms, (player, platform) => {
@@ -49,10 +52,14 @@ class Play extends Phaser.Scene {
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
         keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
+
+
+        this.txt = this.add.text(1200, 650, this.T, { fontFamily: 'Arial', fontSize: 32, color: '#1c1c1cff' });
     }
 
     update() {
         this.direction = new Phaser.Math.Vector2(0)
+        this.txt.setText(this.T)
         if(keyA.isDown) {
             this.direction.x = -1
         } else if(keyD.isDown) {
@@ -88,7 +95,7 @@ class Play extends Phaser.Scene {
                 platform.setFillStyle(0xffffff)
             }
             if(!platform.frozen){
-                platform.setX(this.T)
+                platform.setX(this.T + platform.offset)
                 let newY = ((platform.m * ((this.T - platform.shift)**platform.exp)) + platform.b)
                 if(newY >= 700){
                     newY = 680;
