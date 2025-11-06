@@ -1,3 +1,5 @@
+const { Game } = require("phaser")
+
 const config = {
     parent: 'phaser-game',  // for info text
     type: Phaser.WEBGL,     // for tinting
@@ -13,7 +15,7 @@ const config = {
             debug: true
         }
     },
-    scene: [ Load , Play ]
+    scene: [ Load , Play , GameOver]
 }   
 
 const game = new Phaser.Game(config)
