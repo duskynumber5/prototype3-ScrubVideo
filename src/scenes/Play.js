@@ -59,7 +59,7 @@ class Play extends Phaser.Scene {
 
     update() {
         this.direction = new Phaser.Math.Vector2(0)
-        this.txt.setText(this.T)
+        this.txt.setText(Math.floor(this.T/60)+":"+this.T%60)
         if(keyA.isDown) {
             this.direction.x = -1
         } else if(keyD.isDown) {
