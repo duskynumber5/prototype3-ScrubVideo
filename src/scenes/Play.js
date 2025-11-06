@@ -29,6 +29,14 @@ class Play extends Phaser.Scene {
         r.offset = offset;
         return r;
         };
+        
+        this.triangle = this.add.triangle(10, 50, 1160, 525, 1210, 500,1210,550,0xffffff );
+        this.triangle2 = this.add.triangle(10, 50, 1200, 525, 1250, 500,1250,550,0xffffff );
+        this.triangle3 = this.add.triangle(10, 50, 1210, 525, 1160, 500,1160,550,0xffffff );
+        this.triangle4 = this.add.triangle(10, 50, 1250, 525, 1200, 500,1200,550,0xffffff );
+        
+        this.triangle.setVisible(0);
+        this.triangle2.setVisible(0);
 
         this.platforms = [
             makePlatform(100,600,100,20,1,1,0,1,0),
@@ -72,12 +80,20 @@ class Play extends Phaser.Scene {
 
         if (this.cursors.left.isDown) {
             this.T--
+            this.triangle.setVisible(1);
+            this.triangle2.setVisible(1);
+            this.triangle3.setVisible(0);
+            this.triangle4.setVisible(0);
             if(this.T <= 0){
                 this.T = 0;
             }
 
         } else if (this.cursors.right.isDown) {
             this.T++;
+            this.triangle.setVisible(0);
+            this.triangle2.setVisible(0);
+            this.triangle3.setVisible(1);
+            this.triangle4.setVisible(1);
             if(this.T >= 1200){
                 this.T = 1200;
             }
